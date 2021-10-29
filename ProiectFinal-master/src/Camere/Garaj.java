@@ -5,16 +5,17 @@ import java.util.List;
 
 public class Garaj extends Temperatura {
 
-    private double termperaturaMedie;
 
-    public Garaj(double temperatura, double temperaturaMin, double temperaturaMax, double termperaturaMedie) {
+    private List<Double> veziEvolutie;
+
+    public Garaj (double temperatura, double temperaturaMin, double temperaturaMax) {
         super(temperatura, temperaturaMin, temperaturaMax);
-        this.termperaturaMedie = termperaturaMedie;
+        this.veziEvolutie = new ArrayList<>();
     }
 
-    public Garaj(double temperatura, double termperaturaMedie) {
+    public Garaj (double temperatura) {
         super(temperatura, 10, 17);
-        this.termperaturaMedie = termperaturaMedie;
+
     }
 
 
@@ -28,23 +29,22 @@ public class Garaj extends Temperatura {
         return (temperatura -= temp);
     }
 
-    public double mentineTemperatura(double temp) {
+    public double mentineTemperatura() {
         double temperatura = getTemperatura();
         double temperaturaMin = getTemperaturaMin();
         double temperaturaMax = getTemperaturaMax();
 
-        List<Double> mediaZilei = new ArrayList<>();
-        mediaZilei.add(temperatura);
-
-        if (temperatura < temperaturaMin) {
-            while (temperatura <= temperaturaMax) {
+        if (temperatura <= temperaturaMin) {
+            while (temperatura <= temperaturaMax -3) {
                 temperatura += 0.1;
+                veziEvolutie.add(temperatura);
             }
             return temperatura;
         }
-        if (temperatura > temperaturaMax) {
-            while (temperatura >= temperaturaMin) {
+        if (temperatura >= temperaturaMax) {
+            while (temperatura >= temperaturaMax -3) {
                 temperatura -= 0.1;
+                veziEvolutie.add(temperatura);
             }
             return temperatura;
         }
@@ -56,5 +56,9 @@ public class Garaj extends Temperatura {
         double temperaturaMax = getTemperaturaMax();
 
         return (temperaturaMax + temperaturaMin) / 2;
+    }
+
+    public List<Double> getVeziEvolutie() {
+        return veziEvolutie;
     }
 }
