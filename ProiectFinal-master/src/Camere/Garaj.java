@@ -36,14 +36,14 @@ public class Garaj extends Temperatura {
 
         if (temperatura <= temperaturaMin) {
             while (temperatura <= temperaturaMax -3) {
-                temperatura += 0.1;
+                temperatura = cresteTemperatura(0.1);
                 veziEvolutie.add(temperatura);
             }
             return temperatura;
         }
         if (temperatura >= temperaturaMax) {
             while (temperatura >= temperaturaMax -3) {
-                temperatura -= 0.1;
+                temperatura -= scadeTemperatura(0.1);
                 veziEvolutie.add(temperatura);
             }
             return temperatura;
