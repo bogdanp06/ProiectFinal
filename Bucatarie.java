@@ -1,9 +1,10 @@
 package Camere;
-
+import java.applet.Applet;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class Bucatarie extends Temperatura implements InchCaldura{
@@ -29,6 +30,7 @@ public class Bucatarie extends Temperatura implements InchCaldura{
         frameBucatarie.setSize(500,500);
         frameBucatarie.setVisible(true);
         lblAfisTempActuala.setText(String.valueOf(getTemperatura()));
+
         btnModificareTemperatura.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -36,23 +38,32 @@ public class Bucatarie extends Temperatura implements InchCaldura{
                 setTemperaturaMax(Double.parseDouble(txtTempMaxima.getText()));
                 setTemperaturaMin(Double.parseDouble(txtTempMinima.getText()));
                 mentineTemperatura();
+
                 Graphics g=panelGrafic.getGraphics();
-                g.clearRect(0,0,panelGrafic.getWidth(),panelGrafic.getHeight());
-                int x1=15;
-                int y1=10;
+                g.setColor(Color.white);
+                g.fillRect(10,10,panelGrafic.getWidth()-50,panelGrafic.getHeight()-50);
                 g.drawRect(10,10,panelGrafic.getWidth()-50,panelGrafic.getHeight()-50);
-                panelGrafic.setBackground(Color.cyan);
+                g.setColor(Color.gray);
+                for (int i = 10; i < panelGrafic.getWidth()-40; i=i+10) {
+                     g.drawLine(i,10,i,panelGrafic.getHeight()-40);
+                }
+                for (int i = 10; i < panelGrafic.getHeight()-40; i=i+10) {
+                    g.drawLine(10,i,panelGrafic.getWidth()-40,i);
+                }
                 g.setColor(Color.red);
-                for (int i = 10; i < panelGrafic.getWidth()-50; i=i+10) {
-                     
+                int h=(int)(((panelGrafic.getWidth()-50)*3)/veziEvolutie.size());
+                int x1=25;
+                int k=0;
+                for (int i = 0; i < veziEvolutie.size(); i=i+5) {
+                        x1 =x1+ h;
+                        g.setColor(Color.red);
+                        g.fillOval(x1,panelGrafic.getHeight() - (int) (( veziEvolutie.get(i)) * 10),6,6);
+                        k=i;
+
                 }
-                for (int i = 0; i < veziEvolutie.size()-1; i=i+5) {
-                    if(x1<panelGrafic.getWidth()-50) {
-                        //g.drawLine(x1 + 15, panelGrafic.getHeight() - (int) (((double) veziEvolutie.get(i + 1)) * 10) - 50, x1, panelGrafic.getHeight() - (int) (((double) veziEvolutie.get(i)) * 10) - 50);
-                        x1 += 15;
-                        g.fillOval(x1,panelGrafic.getHeight() - (int) (( veziEvolutie.get(i)) * 10),10,10);
-                    }
-                }
+                g.setColor(Color.blue);
+                g.drawString(String.valueOf(new DecimalFormat("##.##").format(veziEvolutie.get(k))),x1-10,panelGrafic.getHeight() - (int) (( veziEvolutie.get(k)) * 10)+20);
+
             }
         });
     }
@@ -70,27 +81,33 @@ public class Bucatarie extends Temperatura implements InchCaldura{
     }
 
     public void mentineTemperatura() {
-        double temperatura=getTemperatura();
+        double temperatura = getTemperatura();
         double temperaturaMin = getTemperaturaMin();
         double temperaturaMax = getTemperaturaMax();
-        System.out.println("Temperatura medie este "+(temperaturaMax+temperaturaMin)/2+",temperatura "+temperatura+" va fi modificata pana va avea aceeasi valoare cu temperatura medie dorita");
-        if(temperatura<(temperaturaMax+temperaturaMin)/2) {
-            while (getTemperatura() <= (temperaturaMax+temperaturaMin)/2) {
-                double y = (double)((int)(getTemperatura() * 100))/100.0;
-                veziEvolutie.add(y);
-                setTemperatura(getTemperatura() + 0.1);
+        if ((temperaturaMax < 40) && (temperaturaMin > 0)) {
+            lblInfo2.setText("Modificarile au fost facute, noua dvs temperatura a fost setata");
 
-            }
-        }
-        if(temperatura>(temperaturaMax+temperaturaMin)/2) {
-            while (getTemperatura() >= (temperaturaMax + temperaturaMin) / 2) {
-                veziEvolutie.add(getTemperatura());
-                setTemperatura(getTemperatura() - 0.1);
+            System.out.println("Temperatura medie este " + (temperaturaMax + temperaturaMin) / 2 + ",temperatura " + temperatura + " va fi modificata pana va avea aceeasi valoare cu temperatura medie dorita");
+            if (temperatura < (temperaturaMax + temperaturaMin) / 2) {
+                while (getTemperatura() <= (temperaturaMax + temperaturaMin) / 2) {
+                    double y = (double) ((int) (getTemperatura() * 100)) / 100.0;
+                    veziEvolutie.add(y);
+                    setTemperatura(getTemperatura() + 0.1);
 
+                }
             }
+            if (temperatura > (temperaturaMax + temperaturaMin) / 2) {
+                while (getTemperatura() >= (temperaturaMax + temperaturaMin) / 2) {
+                    veziEvolutie.add(getTemperatura());
+                    setTemperatura(getTemperatura() - 0.1);
+
+                }
+            }
+            setTemperatura(veziEvolutie.get(veziEvolutie.size() - 1));
+            lblAfisTempActuala.setText(String.valueOf(getTemperatura()));
+
         }
-        setTemperatura(veziEvolutie.get(veziEvolutie.size()-1));
-        lblAfisTempActuala.setText(String.valueOf(getTemperatura()));
+        else lblInfo2.setText("Temperaturile nu corespund valorilor normale,introdu alte valori!");
     }
     public void getEvolutie() {
         for (int i = 0; i < veziEvolutie.size(); i++) {
