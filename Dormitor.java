@@ -6,6 +6,10 @@ import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -80,6 +84,29 @@ public class Dormitor extends Temperatura implements InchCaldura {
                 {
                     lblInfo2.setText("Incarcati date valide!");
                 }
+                try {
+                    Class.forName("org.sqlite.JDBC");
+                } catch (ClassNotFoundException classNotFoundException) {
+                    classNotFoundException.printStackTrace();
+                }
+                String url = "jdbc:sqlite:C:/Users/Asus/Desktop/ProiectFinalFinal/Bucatarie.db";
+                Connection connection = null;
+                try {
+                    connection = DriverManager.getConnection(url);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+                Statement statement = null;
+                try {
+                    statement = connection.createStatement();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+                try {
+                    statement.execute("INSERT INTO Dormitor(temperatura, temperaturaMin, temperaturaMax) values(" +getTemperatura() + "," + getTemperaturaMin() + "," + getTemperaturaMax()+")");
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         });
     }
@@ -93,6 +120,10 @@ public class Dormitor extends Temperatura implements InchCaldura {
         super(temperatura, 10, 17);
         veziEvolutie = new ArrayList<>();
         Grafica3();
+    }
+    public String tempActuala()
+    {
+        return lblAfisTempActuala.getText();
     }
     public void mentineTemperatura() {
         double temperatura=getTemperatura();
@@ -122,7 +153,6 @@ public class Dormitor extends Temperatura implements InchCaldura {
             lblAfisTempActuala.setText(String.valueOf(getTemperatura()));
         }
         else lblInfo2.setText("Temperaturile nu corespund valorilor normale,introdu alte valori!");
-
             List<String> strings = new ArrayList<String>();
             for (Double d : veziEvolutie) {
                 strings.add(d.toString());

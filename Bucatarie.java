@@ -7,6 +7,10 @@ import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +86,29 @@ public class Bucatarie extends Temperatura implements InchCaldura{
                 {
                     lblInfo2.setText("Incarcati date valide!");
                 }
+                try {
+                    Class.forName("org.sqlite.JDBC");
+                } catch (ClassNotFoundException classNotFoundException) {
+                    classNotFoundException.printStackTrace();
+                }
+                String url = "jdbc:sqlite:C:/Users/Asus/Desktop/ProiectFinalFinal/Bucatarie.db";
+                Connection connection = null;
+                try {
+                    connection = DriverManager.getConnection(url);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+                Statement statement = null;
+                try {
+                    statement = connection.createStatement();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+                try {
+                    statement.execute("INSERT INTO Bucatarie(temperatura, temperaturaMin, temperaturaMax) values(" +getTemperatura() + "," + getTemperaturaMin() + "," + getTemperaturaMax()+")");
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             }
         });
     }
@@ -89,9 +116,6 @@ public class Bucatarie extends Temperatura implements InchCaldura{
         super(temperatura, temperaturaMin, temperaturaMax);
         this.veziEvolutie = new ArrayList<>();
         Grafica();
-
-
-
     }
 
     public Bucatarie (double temperatura) {
@@ -128,7 +152,6 @@ public class Bucatarie extends Temperatura implements InchCaldura{
 
         }
         else lblInfo2.setText("Temperaturile nu corespund valorilor normale,introdu alte valori!");
-
         List<String> strings = new ArrayList<String>();
         for (Double d : veziEvolutie) {
             strings.add(d.toString());
@@ -146,6 +169,10 @@ public class Bucatarie extends Temperatura implements InchCaldura{
     public void InchidereCaldura(){
         setTemperatura(0);
         System.out.println("Temperatura in bucatarie a fost setata la 0 grade!");
+    }
+    public String tempActuala()
+    {
+        return lblAfisTempActuala.getText();
     }
 }
 
