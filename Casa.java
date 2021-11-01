@@ -14,10 +14,12 @@ public class Casa {
         Dormitor dormitor = new Dormitor(10, 20, 30);
         Garaj garaj=new Garaj(10,12,20);
         Class.forName("org.sqlite.JDBC");
-        String url = "jdbc:sqlite:C:/Users/Pirlea/Desktop/ProiectFinalFinal/Bucatarie.db";
+        String url = "jdbc:sqlite:C:/Users/Pirlea/Desktop/ProiectFinalFinal/Temperatura.db";
 
         Connection connection = DriverManager.getConnection(url);
         Statement statement = connection.createStatement();
         statement.execute("INSERT INTO Bucatarie(temperatura, temperaturaMin, temperaturaMax) values(" + bucatarie.getTemperatura() + "," + bucatarie.getTemperaturaMin() + "," + bucatarie.getTemperaturaMax()+")");
+        statement.execute("INSERT INTO Garaj(temperatura, temperaturaMin, temperaturaMax) values(" + garaj.getTemperatura() + "," + garaj.getTemperaturaMin() + "," + garaj.getTemperaturaMax()+")");
+        statement.execute("INSERT INTO Dormitor(temperatura, temperaturaMin, temperaturaMax) values(" + dormitor.getTemperatura() + "," + dormitor.getTemperaturaMin() + "," + dormitor.getTemperaturaMax()+")");
     }
     }
